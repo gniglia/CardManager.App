@@ -1,1 +1,0 @@
-# CardManager.App
