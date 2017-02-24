@@ -1,17 +1,17 @@
-var path = require('path')
-var webpack = require('webpack')
-var basePath = path.join(__dirname, '..');
+const path = require('path')
+const webpack = require('webpack')
+const basePath = path.join(__dirname, '..');
 
-module.exports = require('./webpack.base.config')({
+const options = {
 	devtool: 'inline-source-map',
 	entry: [
 		'webpack-hot-middleware/client?reload=true',
 		path.join(basePath, 'src', 'js', 'index.js')
 	],
 	output: {
-		path: path.join(basePath, 'dist'),
+		path: path.join(basePath, 'public'),
 		filename: 'bundle.js',
-		publicPath: '/static/'
+		publicPath: '/public/'
 	},
 	cssLoaders: [
 		'style-loader',
@@ -24,4 +24,6 @@ module.exports = require('./webpack.base.config')({
 	resolve: {
     modulesDirectories: ['src', 'node_modules']
   }
-});
+};
+
+module.exports = require('./webpack.base.config')(options);

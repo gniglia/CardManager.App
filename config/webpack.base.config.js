@@ -1,18 +1,24 @@
-var path = require('path')
-var webpack = require('webpack')
-var basePath = path.join(__dirname, '..');
+const path = require('path')
+const webpack = require('webpack')
+const basePath = path.join(__dirname, '..');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = (options) => ({
 	entry: options.entry,
 	output: options.output,
 	plugins: options.plugins.concat([
-		new ExtractTextPlugin('style.css', { allChunks: true }),
-		new webpack.ResolverPlugin(
-			new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin('.bower.json', ['main'])
-		),
-		new webpack.optimize.OccurenceOrderPlugin(),
-		new webpack.NoErrorsPlugin(),
+		new HtmlWebpackPlugin({
+			template: path.join(basePath, 'src', 'index.html'),
+			filename: 'index.html',
+			inject: 'body'
+		}),
+		new ExtractTextPlugin({
+			filename: 'style.css',
+			allChunks: true
+		}),
+		new webpack.optimize.OccurrenceOrderPlugin(),
+		new webpack.NoEmitOnErrorsPlugin(),
 		// Always expose NODE_ENV to webpack, in order to use `process.env.NODE_ENV`
 		// inside your code for any environment checks; UglifyJS will automatically
 		// drop any unreachable code.
@@ -23,31 +29,33 @@ module.exports = (options) => ({
 		})
 	]),
 	module: {
-		loaders: [
+		rules: [
 			{
 				test: /\.js$/,
-				loaders: ['babel'],
+				use: ['babel-loader'],
 				exclude: /node_modules/
 			},
 			{
 				test: /\.scss$/,
-				loader: ExtractTextPlugin.extract('style', 'css!sass')
+				use: ExtractTextPlugin.extract({
+					fallback: 'style-loader',
+					use: ['css-loader', 'sass-loader']
+				})
 			},
 			{
 				test: /\.css$/,
-				loaders: options.cssLoaders
+				use: options.cssLoaders
 			},
 			{
 				test: /\.(jpe|jpg|woff|woff2|eot|ttf|svg|png)(\?.*$|$)/,
-				loader: 'file-loader'
+				use: 'file-loader'
 			}
 		]
 	},
 	resolve: {
-		modulesDirectories: ['bower_components', 'node_modules']
+		modules: ['bower_components', 'node_modules']
 	},
 	devtool: options.devtool,
 	target: 'web',
-	stats: false,
-	progress: true
+	stats: false
 });
