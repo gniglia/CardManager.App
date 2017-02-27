@@ -1,7 +1,5 @@
 import path from 'path';
 import express from 'express';
-import config from './config/webpack.dev.config';
-
 import http from 'http';
 import socket from 'socket.io';
 
@@ -9,21 +7,7 @@ const app = express();
 const server = http.Server(app);
 const io = socket(server);
 
-const port = 8080;
-
-import webpack from 'webpack'
-import webpackDevMiddleware from 'webpack-dev-middleware'
-import webpackHotMiddleware from 'webpack-hot-middleware'
-
-const compiler = webpack(config)
-
-app.use(webpackDevMiddleware(compiler, {
-  noInfo: true,
-  publicPath: config.output.publicPath,
-  hot: true,
-	historyApiFallback: true
-}))
-app.use(webpackHotMiddleware(compiler))
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -44,6 +28,8 @@ io.on('connection', (socket) => {
     console.log('user disconnected');
   });
 });
+
+const port = (process.env.PORT || 3000)
 
 server.listen(port, error => {
   if (error) {

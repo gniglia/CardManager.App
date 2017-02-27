@@ -4,6 +4,11 @@
   "description": "",
   "main": "index.html",
   "scripts": {
+    "clean-public": "npm run remove-public && mkdir public",
+    "remove-public": "node_modules/.bin/rimraf ./public",
+    "prebuild": "npm run clean-public",
+    "build": "webpack --config config/webpack.prod.config.js --display-error-details --progress --colors",
+    "postbuild": "babel-node publicServer.js",
     "dev": "babel-node devServer.js",
     "start": "npm test & npm run dev",
     "test": "mocha --reporter progress config/test.js \"src/**/*.test.js\"",
