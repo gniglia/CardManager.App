@@ -17,7 +17,7 @@ const archiveCard = (id) => {
 };
 
 const createCard = (card) => {
-  return axios.post('${apiUri}/cards/', {
+  return axios.post(`${apiUri}/cards`, {
     title: card.title,
     description: card.description,
     state: 'open'

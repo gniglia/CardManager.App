@@ -102,7 +102,6 @@ const getDescriptionField = (card, updateCardDescription) => {
         fieldName='description'
         fieldType='area'
         fieldValue={card.description}
-        required={true}
         onFieldChange={updateCardDescription} />
     )
 }
